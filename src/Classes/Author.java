@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -17,7 +18,7 @@ public class Author {
     private String name;
     private String nationality;
     private String date_birth;
-       
+    private DefaultTableModel table;
     private final String SQL_INSERT = "INSERT INTO authors (name, nacionality, date_birth) VALUES (?,?,?)";
     private final String SQL_SELECT = "SELECT * FROM authors";
     private PreparedStatement PREPARED_STATEMENT;
@@ -80,8 +81,8 @@ public class Author {
             PREPARED_STATEMENT.setString(1, this.name);
             PREPARED_STATEMENT.setString(2, this.nationality);
             PREPARED_STATEMENT.setString(3, this.date_birth);
-            boolean result = PREPARED_STATEMENT.execute();
-            if(result){
+            int result = PREPARED_STATEMENT.executeUpdate();
+            if(result > 0){
                 JOptionPane.showMessageDialog(null, "Autor registrado con éxito.");
             }
         } catch (SQLException e) {
@@ -117,6 +118,40 @@ public class Author {
         return authors_name;
     }
 
+    private void setTitles(){
+        table = new DefaultTableModel();
+        table.addColumn("id");
+        table.addColumn("Nombre");
+        table.addColumn("Nacionlidad");
+        table.addColumn("Fecha de nacimiento");
+    }
+    
+    public DefaultTableModel getAuthors(){
+        try {
+            setTitles();
+            PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_SELECT);
+            RESPONSE = PREPARED_STATEMENT.executeQuery();
+            
+            Object[] fila = new Object[8];
+            while (RESPONSE.next()){
+                fila[0] = RESPONSE.getInt(1);
+                fila[1] = RESPONSE.getString(2);
+                fila[2] = RESPONSE.getString(3);
+                fila[3] = RESPONSE.getString(4);
+                table.addRow(fila);
+            }
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener los datos");
+        } finally {
+            PREPARED_STATEMENT = null;
+            RESPONSE = null;
+            CONNECTOR.closeConnection();
+        }
+        return table;
+    }
+
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

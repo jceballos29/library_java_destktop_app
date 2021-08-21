@@ -1,4 +1,4 @@
-package Form;
+package Form.Author;
 
 import Classes.Author;
 import javax.swing.JOptionPane;
@@ -157,7 +157,6 @@ public class Author_Registry extends javax.swing.JFrame {
         author = new Author(name, nationality, date_birth);
         author.resgisterAuthor();
         
-        JOptionPane.showMessageDialog(rootPane, "Registro de Autor existoso.");
         cleanFields();
         this.setVisible(false);
        

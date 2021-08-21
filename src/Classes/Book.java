@@ -63,8 +63,8 @@ public class Book {
             PREPARED_STATEMENT.setInt(3, author_id);
             PREPARED_STATEMENT.setString(4, this.editorial);
             PREPARED_STATEMENT.setInt(5, this.year_publication);
-            boolean result = PREPARED_STATEMENT.execute();
-            if(result){
+            int result = PREPARED_STATEMENT.executeUpdate();
+            if(result > 0){
                 JOptionPane.showMessageDialog(null, "Libro registrado con éxito.");
             }
         } catch (SQLException e) {

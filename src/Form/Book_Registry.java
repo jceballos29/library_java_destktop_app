@@ -4,14 +4,7 @@ import Administration.Administration;
 import Classes.Author;
 import Classes.Book;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import java.util.Collections;
 
 /**
  *
@@ -21,7 +14,7 @@ public class Book_Registry extends javax.swing.JFrame {
 
     private Book book;
     private final Administration admin = new Administration();
-    private final Author author  = new Author();;
+    private final Author author  = new Author();
     private final ArrayList<Author> authors;
     private final String[] authors_names;
     
@@ -44,6 +37,7 @@ public class Book_Registry extends javax.swing.JFrame {
     private String[] setAuthorsNameArray(){
         ArrayList<String> authors_names_helper;
         authors_names_helper = author.getAuthorsNames();
+        Collections.sort(authors_names_helper);
         int index = authors_names_helper.size();
         String[] list = new String[index];
         for(int i = 0;i<index;i++){
@@ -207,7 +201,6 @@ public class Book_Registry extends javax.swing.JFrame {
         
         book = new Book(name, type, author_id, editorial, year);
         book.resgisterBook();
-        JOptionPane.showMessageDialog(rootPane, book.toString());
         
         cleanFields();
         this.setVisible(false);
