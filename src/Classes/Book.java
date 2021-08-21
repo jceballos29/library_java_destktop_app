@@ -6,8 +6,13 @@
 package Classes;
 
 import Administration.Administration;
+import Connection.db_connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,49 +23,58 @@ public class Book {
     private final Administration admin = new Administration();
     
     private int id;
-    private final String type;
-    private String state = "on library";
-    private final String name;
-    private final String editorial;
-    private final int author_id;
-    private final int year_publication;
-    private LocalDate returns_date = null;
-    private int days_late = 0;
-    private int loan_partner_id = 0;
+    private String name;
+    private String type;
+    private int author_id;
+    private String editorial;
+    private int year_publication;
+    private String state;
+    private int loan_partner_id;
+    private String returns_date;
+
+    private final String SQL_INSERT = "INSERT INTO books (name,type,author_id,editorial,year_publication) VALUES (?,?,?,?,?)";
+    private final String SQL_SELECT = "SELECT * FROM books";
+    private PreparedStatement PREPARED_STATEMENT;
+    private ResultSet RESPONSE;
+    private final db_connection CONNECTOR;
+
+    public Book() {
+        this.PREPARED_STATEMENT = null;
+        this.CONNECTOR = new db_connection();
+    }        
     
-    public Book(String name, String type, String editorial, int author_id, int year_publication) {
+    public Book(String name, String type, int author_id, String editorial, int year_publication) {
         this.name = name;
         this.type = type;
-        this.editorial = editorial;
         this.author_id = author_id;
+        this.editorial = editorial;
         this.year_publication = year_publication;
+        this.state = "library";
+        this.returns_date = null;
+        this.PREPARED_STATEMENT = null;
+        this.CONNECTOR = new db_connection();
+    }
 
-    }
-    
-    public void lendBook(int loan_partner_id){ 
-        if("on library".equals(this.state)){
-            this.state = "on loan";
-            this.loan_partner_id = loan_partner_id;
-            this.returns_date = LocalDate.now().plusDays(30);
-        }
-    }
-    
-    public void validateLoanStatus(){
-        if("on loan".equals(this.state)){
-            int diff = (int) returns_date.until(LocalDate.now(), ChronoUnit.DAYS);
-            if(diff > 0){
-                this.state = "on belated";
-                this.days_late = diff;
+    public void resgisterBook(){
+        try {
+            PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_INSERT);
+            PREPARED_STATEMENT.setString(1, this.name);
+            PREPARED_STATEMENT.setString(2, this.type);
+            PREPARED_STATEMENT.setInt(3, author_id);
+            PREPARED_STATEMENT.setString(4, this.editorial);
+            PREPARED_STATEMENT.setInt(5, this.year_publication);
+            boolean result = PREPARED_STATEMENT.execute();
+            if(result){
+                JOptionPane.showMessageDialog(null, "Libro registrado con éxito.");
             }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error al guardar registro en la base de datos", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            PREPARED_STATEMENT = null;
+            RESPONSE = null;
+            CONNECTOR.closeConnection();
         }
     }
-    
-    public void returnBook(){
-        this.state = "on library";
-        this.loan_partner_id = 0;   
-    }
-
-
 
     @Override
     public String toString() {
@@ -72,13 +86,6 @@ public class Book {
         sb.append("\nEditorial: ").append(editorial);
         sb.append("\nYear of Publicatio: ").append(year_publication);
         sb.append("\nState: ").append(state);
-        if("on loan".equals(state)){
-            sb.append("\nReturns date=").append(returns_date);
-            sb.append("\nLoan Partner id: ").append(loan_partner_id);
-        }
-        if("on belated".equals(state)){
-            sb.append("Days Late: ").append(days_late);
-        }
         
         return sb.toString();
     }

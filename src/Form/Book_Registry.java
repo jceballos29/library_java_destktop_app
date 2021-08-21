@@ -23,7 +23,7 @@ public class Book_Registry extends javax.swing.JFrame {
     private final Administration admin = new Administration();
     private final Author author  = new Author();;
     private final ArrayList<Author> authors;
-    private String[] authors_names;
+    private final String[] authors_names;
     
          
     public Book_Registry() {
@@ -205,7 +205,8 @@ public class Book_Registry extends javax.swing.JFrame {
         String type = this.type_field.getText();
         int year = Integer.parseInt(this.year_field.getText());
         
-        book = new Book(name, type, editorial, author_id, year);
+        book = new Book(name, type, author_id, editorial, year);
+        book.resgisterBook();
         JOptionPane.showMessageDialog(rootPane, book.toString());
         
         cleanFields();

@@ -155,7 +155,6 @@ public class Author_Registry extends javax.swing.JFrame {
         String date_birth = this.date_birth_field.getText();
         
         author = new Author(name, nationality, date_birth);
-        System.out.println(author.toString());
         author.resgisterAuthor();
         
         JOptionPane.showMessageDialog(rootPane, "Registro de Autor existoso.");
