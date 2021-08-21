@@ -95,9 +95,7 @@ public class Author {
     }
     
     public int searchIdByName(String name){
-        ArrayList<String> authors_name;
-        authors_name = new ArrayList<>();
-        ArrayList<Author> authors_list = getAuthorsList();
+        ArrayList<Author> authors_list = this.getAuthorsList();
         int author_id = 0;
         for(int i = 0; i< authors_list.size(); i++){
             if(authors_list.get(i).getName().equals(name)){
@@ -106,6 +104,17 @@ public class Author {
         }
        
         return author_id;
+    }
+    
+    public String searchNameById(int id){
+        ArrayList<Author> author_list = this.getAuthorsList();
+        String author_name = null;
+        for(int i = 0; i<author_list.size();i++){
+            if(author_list.get(i).getId()==id){
+                author_name = author_list.get(i).getName();
+            }
+        }
+        return author_name;
     }
     
     public ArrayList getAuthorsNames(){
@@ -132,7 +141,7 @@ public class Author {
             PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_SELECT);
             RESPONSE = PREPARED_STATEMENT.executeQuery();
             
-            Object[] fila = new Object[8];
+            Object[] fila = new Object[4];
             while (RESPONSE.next()){
                 fila[0] = RESPONSE.getInt(1);
                 fila[1] = RESPONSE.getString(2);

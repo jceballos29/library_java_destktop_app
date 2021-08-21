@@ -1,4 +1,4 @@
-package Form;
+package Form.Book;
 
 import Administration.Administration;
 import Classes.Author;

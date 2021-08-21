@@ -5,10 +5,12 @@
  */
 package Form;
 
+import Form.Book.Book_Registry;
+import Form.Book.Books;
 import Classes.Author;
+import Classes.Book;
 import Form.Author.Author_Registry;
 import Form.Author.Authors;
-import Classes.Author;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 /**
@@ -18,11 +20,13 @@ import javax.swing.JOptionPane;
 public class Administration_Panel extends javax.swing.JFrame {
       
     private final Author author;
+    private final Book book;
     
     public Administration_Panel() {
         initComponents();
         this.setLocationRelativeTo(null);
         this.author = new Author();
+        this.book = new Book();
         setCounts();
     }
 
@@ -41,8 +45,8 @@ public class Administration_Panel extends javax.swing.JFrame {
         show_authors_button = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JSeparator();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        count_books = new javax.swing.JLabel();
+        show_books_button = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
@@ -101,10 +105,15 @@ public class Administration_Panel extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         jLabel3.setText("Libros");
 
-        jLabel4.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
-        jLabel4.setText("0");
+        count_books.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
+        count_books.setText("0");
 
-        jButton3.setText("Listar");
+        show_books_button.setText("Listar");
+        show_books_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                show_books_buttonActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Ubuntu", 1, 18)); // NOI18N
         jLabel5.setText("Socios");
@@ -117,47 +126,35 @@ public class Administration_Panel extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(count_authors))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel4))
-                            .addComponent(jSeparator1)
-                            .addComponent(jSeparator2)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel6))
-                            .addComponent(jSeparator3))
-                        .addGap(18, 18, 18))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(exit_button, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(82, 82, 82))
+                        .addComponent(show_books_button, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(add_book_button, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSeparator1)
+                    .addComponent(jSeparator3)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(64, 64, 64)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(show_authors_button, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(add_author_button, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(add_book_button, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(count_authors))
+                    .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSeparator2)
+                    .addComponent(exit_button, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(show_authors_button, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(add_author_button, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(count_books)))
+                .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.CENTER, layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -179,13 +176,13 @@ public class Administration_Panel extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                            .addComponent(count_books))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(add_book_button, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(show_books_button, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
@@ -202,8 +199,10 @@ public class Administration_Panel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void setCounts(){
-        ArrayList<Author> authors = author.getAuthorsList();
+        ArrayList<Author> authors = this.author.getAuthorsList();
+        ArrayList<Book> books = this.book.getBooksList();
         this.count_authors.setText(String.valueOf(authors.size()));
+        this.count_books.setText(String.valueOf(books.size()));
     }
     
     private void add_author_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_author_buttonActionPerformed
@@ -242,15 +241,21 @@ public class Administration_Panel extends javax.swing.JFrame {
         authors.setVisible(true);
     }//GEN-LAST:event_show_authors_buttonActionPerformed
 
+    private void show_books_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_show_books_buttonActionPerformed
+        // TODO add your handling code here:
+        Books books = new Books();
+        books.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        books.setVisible(true);
+    }//GEN-LAST:event_show_books_buttonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add_author_button;
     private javax.swing.JButton add_book_button;
     private javax.swing.JLabel count_authors;
+    private javax.swing.JLabel count_books;
     private javax.swing.JButton exit_button;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
@@ -258,6 +263,7 @@ public class Administration_Panel extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JButton show_authors_button;
+    private javax.swing.JButton show_books_button;
     private javax.swing.JLabel title;
     // End of variables declaration//GEN-END:variables
 }
