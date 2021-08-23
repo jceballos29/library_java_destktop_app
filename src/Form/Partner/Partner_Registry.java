@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Form;
+package Form.Partner;
 
 import javax.swing.JOptionPane;
+import Classes.Partner;
+import Form.Index;
 
 /**
  *
@@ -23,13 +25,13 @@ public class Partner_Registry extends javax.swing.JFrame {
     private String name;
     private String telephone;
     private String email;
-    private String addres; 
+    private String address; 
     
     public Partner_Registry() {
         initComponents();
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-                
+        
         this.sign_up_button.setEnabled(false);
         container.add(user_data);
         container.add(personal_info);
@@ -119,17 +121,23 @@ public class Partner_Registry extends javax.swing.JFrame {
         this.user = user_data.getUser();
         this.password = user_data.getPassword();
         this.confirm_password = user_data.getConfirm_password();
-
-        if(password.equals(confirm_password)){
-            this.sign_up_button.setEnabled(true);
-            this.next_button.setEnabled(false);
-            user_data.setVisible(false);
-            user_data.cleanFields();
-            personal_info.setVisible(true);
+        
+        if("".equals(this.user) || "".equals(this.password) || "".equals(this.confirm_password)){
+            JOptionPane.showMessageDialog(rootPane, "Los Campos no pueden estar vacíos");
         } else {
-            JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden");
-            user_data.cleanPaswordField();
+            if(password.equals(confirm_password)){
+                this.sign_up_button.setEnabled(true);
+                this.next_button.setEnabled(false);
+                user_data.setVisible(false);
+                user_data.cleanFields();
+                personal_info.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Las contraseñas no coinciden");
+                user_data.cleanPaswordField();
+            }
+
         }
+       
     }//GEN-LAST:event_next_buttonActionPerformed
 
     private void sign_up_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sign_up_buttonActionPerformed
@@ -137,11 +145,18 @@ public class Partner_Registry extends javax.swing.JFrame {
         this.name = personal_info.getUserName();
         this.telephone = personal_info.getTelephone();
         this.email = personal_info.getEmail();
-        this.addres = personal_info.getAddres();
+        this.address = personal_info.getAddres();
         
-        JOptionPane.showMessageDialog(this, this.toString());
-        this.setVisible(false);
-        index.setVisible(true);
+        if("".equals(this.name)||"".equals(this.telephone)||"".equals(this.email)||"".equals(this.address)){
+            JOptionPane.showMessageDialog(rootPane, "Los Campos no pueden estar vacíos");
+        } else {
+            Partner partner = new Partner(this.user, this.password, this.name, this.telephone, this.email, this.address);
+            partner.registerPartner();
+            
+            this.setVisible(false);
+            index.setVisible(true);            
+        }
+
     }//GEN-LAST:event_sign_up_buttonActionPerformed
 
     private void cancel_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel_buttonActionPerformed
@@ -152,20 +167,6 @@ public class Partner_Registry extends javax.swing.JFrame {
         index.setVisible(true);
     }//GEN-LAST:event_cancel_buttonActionPerformed
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("PARTNER");
-        sb.append("\nUser: ").append(user);
-        sb.append("\nName: ").append(name);
-        sb.append("\nTelephone: ").append(telephone);
-        sb.append("\nEmail: ").append(email);
-        sb.append("\nAddres: ").append(addres);
-        return sb.toString();
-    }
-    
-        
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancel_button;
     private javax.swing.JPanel container;

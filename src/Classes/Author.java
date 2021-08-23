@@ -160,17 +160,6 @@ public class Author {
         return table;
     }
 
-    
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("\nId: ").append(id);
-        sb.append("\nName: ").append(name);
-        sb.append("\nNationalty: ").append(nationality);
-        sb.append("\nDate_birth: ").append(date_birth);
-        return sb.toString();
-    }
-
     public int getId() {
         return id;
     }

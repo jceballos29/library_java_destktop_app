@@ -5,7 +5,6 @@
  */
 package Administration;
 
-import Classes.Book;
 import Connection.db_connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,18 +17,34 @@ import javax.swing.JOptionPane;
  */
 public class Validation {
     
-    private final String SQL_SELECT = "SELECT * FROM admin WHERE id=1";
     private PreparedStatement PREPARED_STATEMENT = null;
     private ResultSet RESPONSE;
     private final db_connection CONNECTOR = new db_connection();
     
     public boolean validateUser(String user, String password){
-        String u = "jcebalus";
-        String p = "ceballos1";
-        return user.equals(u) && password.equals(p);
+        String SQL_QUERY = "SELECT password FROM partners WHERE user='"+user+"'";
+        String p = null;
+        try {
+            PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_QUERY);
+            RESPONSE = PREPARED_STATEMENT.executeQuery();
+            
+            while(RESPONSE.next()){
+                p = RESPONSE.getString(1);
+            }
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener los datos");
+        } finally {
+            PREPARED_STATEMENT = null;
+            RESPONSE = null;
+            CONNECTOR.closeConnection();
+        }    
+        
+        return password.equals(p);
     }
     
     public boolean validateAdmin(String password){
+        String SQL_SELECT = "SELECT password FROM admin WHERE id=1";
         String admin_password = null;
         try {
             PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_SELECT);

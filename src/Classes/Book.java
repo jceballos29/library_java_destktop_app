@@ -6,11 +6,12 @@
 package Classes;
 
 import Administration.Administration;
-import Classes.Author;
 import Connection.db_connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -67,9 +68,16 @@ public class Book {
         this.PREPARED_STATEMENT = null;
         this.CONNECTOR = new db_connection();
     }
-    
-    
 
+    private Book(int id, String name, int author_id, String returns_date){
+        this.id = id;
+        this.name = name;
+        this.author_id = author_id;
+        this.returns_date = returns_date;
+        this.PREPARED_STATEMENT = null;
+        this.CONNECTOR = new db_connection();
+    }
+    
     public void resgisterBook(){
         try {
             PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_INSERT);
@@ -131,8 +139,7 @@ public class Book {
         }
         return table;
     }
-    
-    
+
     public ArrayList getBooksList(){
         ArrayList<Book> books_list;
         books_list = new ArrayList<>();
@@ -161,20 +168,129 @@ public class Book {
         
         return books_list;
     }
-    
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Id: ").append(id);
-        sb.append("\nType: ").append(type);
-        sb.append("\nName: ").append(name);
-        sb.append("\nAuthor Id: ").append(author_id);
-        sb.append("\nEditorial: ").append(editorial);
-        sb.append("\nYear of Publicatio: ").append(year_publication);
-        sb.append("\nState: ").append(state);
+   
+    public ArrayList getBooksOnLibrary(){
+            ArrayList<Book> books_library = new ArrayList<>();
+            String SQL_QUERY = "SELECT * FROM `books` WHERE state = 'library'";
+
+            try {
+            PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_QUERY);
+            RESPONSE = PREPARED_STATEMENT.executeQuery();
+
+            while (RESPONSE.next()){
+            int book_id = RESPONSE.getInt(1);
+                String book_name = RESPONSE.getString(2);
+                String book_type = RESPONSE.getString(3);
+                int book_author_id = RESPONSE.getInt(4);
+                String book_editorial = RESPONSE.getString(5);
+                int book_year = RESPONSE.getInt(6);
+                String book_state = RESPONSE.getString(7);
+                books_library.add(new Book(book_id, book_name, book_type, book_author_id, book_editorial, book_year, book_state));
+            }
+            } catch (SQLException e) {
+                 JOptionPane.showMessageDialog(null, "Error al obtener los datos");
+            } finally {
+                PREPARED_STATEMENT = null;
+                RESPONSE = null;
+                CONNECTOR.closeConnection();
+             }
+            return books_library;
+        }
         
-        return sb.toString();
+    public void loanBook(String name_book, int partner_id){
+        String returns_book_day = LocalDate.now().plusDays(30).toString();
+        String SQL_QUERY = "UPDATE `books` SET state = 'loan', loan_partner_id = " +partner_id 
+                + ", returns_date = '" + returns_book_day
+                + "' WHERE name ='" + name_book + "'";
+        try {
+            
+            PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_QUERY);
+            int res = PREPARED_STATEMENT.executeUpdate();
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al actualizar los datos");
+            System.err.println(e);
+        } finally {
+            PREPARED_STATEMENT = null;
+            RESPONSE = null;
+            CONNECTOR.closeConnection();
+        }
     }
 
-   
+    public void returnBook(int book_id){
+        String returns_book_day = LocalDate.now().plusDays(30).toString();
+        String SQL_QUERY = "UPDATE `books` SET state = 'library', loan_partner_id = 0, returns_date = null WHERE id = " + book_id;
+        try {
+            
+            PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_QUERY);
+            int res = PREPARED_STATEMENT.executeUpdate();
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al actualizar los datos");
+            System.err.println(e);
+        } finally {
+            PREPARED_STATEMENT = null;
+            RESPONSE = null;
+            CONNECTOR.closeConnection();
+        }
+    }
+    
+    public ArrayList getPartnerBooks(int partner_id){
+        ArrayList<Book> partner_books = new ArrayList<>();
+        String SQL_QUERY = "SELECT * FROM `books` WHERE loan_partner_id = "+partner_id;
+        try {
+            PREPARED_STATEMENT = CONNECTOR.openConnection().prepareStatement(SQL_QUERY);
+            RESPONSE = PREPARED_STATEMENT.executeQuery();
+            while (RESPONSE.next()) {                
+                int book_id = RESPONSE.getInt(1);
+                String book_name = RESPONSE.getString(2);
+                int book_author_id = RESPONSE.getInt(4);
+                String book_returns_date = RESPONSE.getString(9);
+                partner_books.add(new Book(book_id, book_name, book_author_id, book_returns_date));
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error al obtener los datos");
+        } finally {
+            PREPARED_STATEMENT = null;
+            RESPONSE = null;
+            CONNECTOR.closeConnection();
+        }
+        return partner_books;
+    }
+    
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public int getAuthor_id() {
+        return author_id;
+    }
+
+    public String getEditorial() {
+        return editorial;
+    }
+
+    public int getYear_publication() {
+        return year_publication;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public int getLoan_partner_id() {
+        return loan_partner_id;
+    }
+
+    public String getReturns_date() {
+        return returns_date;
+    }
 }

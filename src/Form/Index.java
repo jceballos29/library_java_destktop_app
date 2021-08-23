@@ -1,5 +1,7 @@
 package Form;
 
+import Form.Partner.Partner_Registry;
+import Form.Partner.Partner_Dashboard;
 import Administration.Validation;
 import javax.swing.JOptionPane;
 /**
@@ -157,9 +159,13 @@ public class Index extends javax.swing.JFrame {
         String password = String.valueOf(this.password_field.getPassword());
                 
         if(validation.validateUser(user, password)){
+            Partner_Dashboard dashboard = new Partner_Dashboard(user);
             this.user_field.setText("");
             this.password_field.setText("");
-            JOptionPane.showMessageDialog(this, "Bienvenido");
+            
+            this.setVisible(false);
+            dashboard.setVisible(true);
+            dashboard.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         } else {
             this.user_field.setText("");
             this.password_field.setText("");
